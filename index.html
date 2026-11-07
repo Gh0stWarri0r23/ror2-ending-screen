@@ -1,0 +1,1072 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Risk of Rain 2 - Stream Ending Screen</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Rajdhani:wght@500;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+    <!-- FontAwesome for HUD Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        orbitron: ['Orbitron', 'sans-serif'],
+                        rajdhani: ['Rajdhani', 'sans-serif'],
+                        mono: ['Share Tech Mono', 'monospace'],
+                    },
+                    colors: {
+                        ror: {
+                            gold: '#ffb700',
+                            lunar: '#00d2ff',
+                            void: '#bc13fe',
+                            crimson: '#ff2a4b',
+                            green: '#20e070',
+                            white: '#e2e8f0',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* Custom RoR2 Sci-Fi HUD Styles & Utilities */
+        :root {
+            --bg-base: #060a12;
+            --primary-glow: rgba(0, 210, 255, 0.4);
+            --accent-color: #00d2ff;
+            --secondary-glow: rgba(255, 183, 0, 0.3);
+            --panel-bg: rgba(10, 16, 26, 0.75);
+            --panel-border: rgba(0, 210, 255, 0.3);
+            --text-glow: 0 0 10px rgba(0, 210, 255, 0.6);
+        }
+
+        /* Theme CSS Variable Overrides */
+        body.theme-sky-meadow {
+            --bg-base: #07111e;
+            --primary-glow: rgba(52, 232, 158, 0.5);
+            --accent-color: #34e89e;
+            --secondary-glow: rgba(255, 0, 127, 0.4);
+            --panel-bg: rgba(10, 25, 38, 0.78);
+            --panel-border: rgba(52, 232, 158, 0.35);
+            --text-glow: 0 0 12px rgba(52, 232, 158, 0.6);
+        }
+
+        body.theme-abyssal {
+            --bg-base: #140406;
+            --primary-glow: rgba(255, 42, 75, 0.6);
+            --accent-color: #ff2a4b;
+            --secondary-glow: rgba(255, 140, 0, 0.4);
+            --panel-bg: rgba(28, 8, 12, 0.82);
+            --panel-border: rgba(ff, 42, 75, 0.4);
+            --text-glow: 0 0 12px rgba(255, 42, 75, 0.7);
+        }
+
+        body.theme-void {
+            --bg-base: #0b0314;
+            --primary-glow: rgba(188, 19, 254, 0.6);
+            --accent-color: #bc13fe;
+            --secondary-glow: rgba(0, 243, 255, 0.4);
+            --panel-bg: rgba(19, 8, 33, 0.82);
+            --panel-border: rgba(188, 19, 254, 0.4);
+            --text-glow: 0 0 12px rgba(188, 19, 254, 0.7);
+        }
+
+        body.theme-titanic {
+            --bg-base: #06120d;
+            --primary-glow: rgba(255, 183, 0, 0.6);
+            --accent-color: #ffb700;
+            --secondary-glow: rgba(32, 224, 112, 0.4);
+            --panel-bg: rgba(10, 24, 18, 0.8);
+            --panel-border: rgba(255, 183, 0, 0.35);
+            --text-glow: 0 0 12px rgba(255, 183, 0, 0.6);
+        }
+
+        body {
+            background-color: var(--bg-base);
+            color: #ffffff;
+            font-family: 'Rajdhani', sans-serif;
+            overflow: hidden;
+            user-select: none;
+        }
+
+        /* Scanline Overlay for CRT / Alien HUD vibe */
+        .scanlines {
+            background: linear-gradient(
+                rgba(18, 16, 16, 0) 50%, 
+                rgba(0, 0, 0, 0.25) 50%
+            ), linear-gradient(
+                90deg,
+                rgba(255, 0, 0, 0.03),
+                rgba(0, 255, 0, 0.01),
+                rgba(0, 0, 255, 0.03)
+            );
+            background-size: 100% 3px, 6px 100%;
+            pointer-events: none;
+        }
+
+        /* Angular RoR2 HUD Box Styling */
+        .ror-box {
+            background: var(--panel-bg);
+            border: 1px solid var(--panel-border);
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.6), inset 0 0 15px var(--primary-glow);
+            backdrop-filter: blur(8px);
+            position: relative;
+            clip-path: polygon(
+                0 10px, 
+                10px 0, 
+                calc(100% - 10px) 0, 
+                100% 10px, 
+                100% calc(100% - 10px), 
+                calc(100% - 10px) 100%, 
+                10px 100%, 
+                0 calc(100% - 10px)
+            );
+        }
+
+        .ror-box-accent {
+            border-left: 3px solid var(--accent-color);
+        }
+
+        /* Sci-Fi HUD Bracket Corner Ticks */
+        .hud-bracket {
+            position: relative;
+        }
+        .hud-bracket::before, .hud-bracket::after {
+            content: '';
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            border-color: var(--accent-color);
+            pointer-events: none;
+        }
+        .hud-bracket::before {
+            top: -2px; left: -2px;
+            border-top: 2px solid var(--accent-color);
+            border-left: 2px solid var(--accent-color);
+        }
+        .hud-bracket::after {
+            bottom: -2px; right: -2px;
+            border-bottom: 2px solid var(--accent-color);
+            border-right: 2px solid var(--accent-color);
+        }
+
+        /* Pulse Animations */
+        @keyframes teleporterPulse {
+            0%, 100% {
+                box-shadow: 0 0 10px var(--accent-color), inset 0 0 8px var(--accent-color);
+                border-color: var(--accent-color);
+            }
+            50% {
+                box-shadow: 0 0 25px var(--accent-color), inset 0 0 15px var(--accent-color);
+                border-color: #ffffff;
+            }
+        }
+
+        .animate-teleporter {
+            animation: teleporterPulse 2.5s infinite ease-in-out;
+        }
+
+        @keyframes textGlowPulse {
+            0%, 100% { text-shadow: var(--text-glow); }
+            50% { text-shadow: 0 0 20px var(--accent-color), 0 0 30px #ffffff; }
+        }
+
+        .glow-text-pulse {
+            animation: textGlowPulse 3s infinite ease-in-out;
+        }
+
+        /* Difficulty Meter Gauge Bar */
+        .diff-block {
+            height: 18px;
+            flex: 1;
+            margin: 0 1px;
+            transform: skewX(-18deg);
+            opacity: 0.35;
+            transition: all 0.3s;
+        }
+        .diff-block.active {
+            opacity: 1;
+            box-shadow: 0 0 8px currentColor;
+        }
+
+        /* Scrollbar customizing */
+        ::-webkit-scrollbar {
+            width: 4px;
+        }
+        ::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.4);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: var(--accent-color);
+            border-radius: 2px;
+        }
+
+        /* Item Tier Rarity Borders */
+        .item-card {
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        .item-card:hover {
+            transform: translateY(-2px) scale(1.03);
+        }
+        .tier-white { border-bottom: 3px solid #e2e8f0; background: linear-gradient(180deg, rgba(226,232,240,0.1), transparent); }
+        .tier-green { border-bottom: 3px solid #20e070; background: linear-gradient(180deg, rgba(32,224,112,0.15), transparent); }
+        .tier-red { border-bottom: 3px solid #ff2a4b; background: linear-gradient(180deg, rgba(255,42,75,0.2), transparent); }
+        .tier-lunar { border-bottom: 3px solid #00d2ff; background: linear-gradient(180deg, rgba(0,210,255,0.2), transparent); }
+        .tier-boss { border-bottom: 3px solid #ffb700; background: linear-gradient(180deg, rgba(255,183,0,0.2), transparent); }
+    </style>
+</head>
+<body class="theme-sky-meadow w-screen h-screen flex flex-col justify-between p-4 md:p-6 relative select-none">
+
+    <!-- Canvas Background for Atmosphere (Rain, Spores, Fog, Teleporter Beam) -->
+    <canvas id="bgCanvas" class="absolute inset-0 w-full h-full z-0 pointer-events-none"></canvas>
+
+    <!-- Scanline CRT Effect Overlay -->
+    <div class="scanlines absolute inset-0 z-10"></div>
+
+    <!-- MAIN HUD UI WRAPPER -->
+    <div class="relative z-20 flex flex-col justify-between h-full w-full max-w-[1920px] mx-auto pointer-events-none">
+        
+        <!-- TOP HUD NAVIGATION BAR -->
+        <header class="flex flex-wrap items-center justify-between gap-4 w-full pointer-events-auto">
+            
+            <!-- STAGE & STREAMER INFO BLOCK -->
+            <div class="ror-box px-5 py-3 flex items-center gap-4 border-l-4" style="border-left-color: var(--accent-color);">
+                <div class="relative flex items-center justify-center w-10 h-10 rounded bg-slate-900 border border-slate-700 text-yellow-400 font-orbitron font-bold text-lg shadow-inner">
+                    <i class="fa-solid fa-skull text-xs text-red-500 absolute -top-1 -right-1"></i>
+                    <span id="displayStageNum">99</span>
+                </div>
+                <div>
+                    <div class="flex items-center gap-2">
+                        <span class="text-xs uppercase tracking-widest text-slate-400 font-mono">Current Location</span>
+                        <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
+                    </div>
+                    <div class="text-xl md:text-2xl font-orbitron font-black tracking-wider uppercase text-white" id="displayStageName">
+                        PETRICHOR V - PRIME
+                    </div>
+                </div>
+            </div>
+
+            <!-- STREAM STATUS HEADER BADGE -->
+            <div class="hidden lg:flex flex-col items-center">
+                <div class="ror-box px-6 py-2 border-t-2" style="border-top-color: var(--accent-color);">
+                    <div class="text-xs font-mono tracking-widest text-slate-300 text-center uppercase">
+                        <i class="fa-solid fa-satellite-dish mr-2 text-cyan-400 animate-pulse"></i> Teleporter Charging Phase Complete
+                    </div>
+                    <div class="text-lg font-orbitron font-bold text-yellow-400 tracking-widest text-center" id="displayHeaderTagline">
+                        STREAM ENDED &bull; ALL SURVIVORS EVACUATED
+                    </div>
+                </div>
+            </div>
+
+            <!-- CURRENCY & ROR2 DIFFICULTY METER -->
+            <div class="ror-box px-4 py-3 flex flex-col gap-2 min-w-[280px] sm:min-w-[340px]">
+                
+                <!-- Currency Row -->
+                <div class="flex items-center justify-between border-b border-slate-700/60 pb-2">
+                    <div class="flex items-center gap-3">
+                        <!-- Lunar Coins -->
+                        <div class="flex items-center gap-1.5 text-cyan-300 font-mono font-bold text-sm" title="Lunar Coins">
+                            <i class="fa-solid fa-moon text-cyan-400"></i>
+                            <span id="displayLunarCoins">1,492</span>
+                        </div>
+                        <!-- Void Crests -->
+                        <div class="flex items-center gap-1.5 text-purple-400 font-mono font-bold text-sm ml-2" title="Void Crests">
+                            <i class="fa-solid fa-[#bc13fe] fa-spaghetti-monster-flying text-purple-400"></i>
+                            <i class="fa-solid fa-bahai"></i>
+                            <span id="displayVoidCoins">88</span>
+                        </div>
+                    </div>
+                    <div class="text-xs font-mono uppercase tracking-wider text-slate-400">
+                        Difficulty
+                    </div>
+                </div>
+
+                <!-- Difficulty Bar HUD (Easy -> HAHAHAHA) -->
+                <div class="flex flex-col gap-1">
+                    <div class="flex items-center justify-between text-[11px] font-mono font-bold">
+                        <span class="text-slate-400">EASY</span>
+                        <span class="text-red-500 font-orbitron tracking-wider animate-pulse" id="displayDiffLabel">HAHAHAHA</span>
+                    </div>
+                    <div class="flex items-center w-full" id="diffGauge">
+                        <div class="diff-block active" style="background:#20e070; color:#20e070;"></div>
+                        <div class="diff-block active" style="background:#a3e635; color:#a3e635;"></div>
+                        <div class="diff-block active" style="background:#facc15; color:#facc15;"></div>
+                        <div class="diff-block active" style="background:#fb923c; color:#fb923c;"></div>
+                        <div class="diff-block active" style="background:#f87171; color:#f87171;"></div>
+                        <div class="diff-block active" style="background:#ef4444; color:#ef4444;"></div>
+                        <div class="diff-block active" style="background:#dc2626; color:#dc2626;"></div>
+                        <div class="diff-block active" style="background:#9333ea; color:#9333ea;"></div>
+                        <div class="diff-block active" style="background:#ff2a4b; color:#ff2a4b;"></div>
+                    </div>
+                </div>
+
+            </div>
+        </header>
+
+        <!-- MAIN HERO CONTENT CENTER -->
+        <main class="grid grid-cols-1 lg:grid-cols-12 gap-6 my-auto py-4 items-center">
+            
+            <!-- LEFT / CENTER COLUMN: Teleporter Status & Stream Countdown -->
+            <div class="lg:col-span-7 flex flex-col gap-6 pointer-events-auto">
+                
+                <!-- Main Broadcast Ending Hero Panel -->
+                <div class="ror-box p-6 md:p-8 animate-teleporter">
+                    
+                    <div class="flex items-center gap-3 mb-2">
+                        <span class="px-3 py-1 bg-yellow-500/20 border border-yellow-500/50 text-yellow-400 text-xs font-mono font-bold uppercase tracking-widest rounded-sm">
+                            <i class="fa-solid fa-bolt mr-1"></i> Mission Complete
+                        </span>
+                        <span class="text-xs font-mono text-slate-400 uppercase tracking-widest" id="displayBroadcasterHandle">
+                            @Broadcaster
+                        </span>
+                    </div>
+
+                    <!-- Main Dynamic Title -->
+                    <h1 class="text-3xl sm:text-5xl md:text-6xl font-orbitron font-black uppercase tracking-tight text-white mb-2 glow-text-pulse" id="displayMainTitle">
+                        TELEPORTER CHARGED
+                    </h1>
+
+                    <!-- Dynamic Subtitle -->
+                    <p class="text-slate-300 text-base md:text-xl font-rajdhani font-semibold leading-relaxed max-w-2xl mb-6" id="displaySubtitle">
+                        Thanks for surviving tonight's planetary run! Next broadcast commencing soon.
+                    </p>
+
+                    <!-- Teleporter 100% Charge Progress Meter -->
+                    <div class="space-y-2">
+                        <div class="flex justify-between items-end font-mono text-xs md:text-sm">
+                            <span class="text-slate-300 font-bold uppercase tracking-widest flex items-center gap-2">
+                                <i class="fa-solid fa-circle-notch fa-spin text-cyan-400"></i> Signal Evacuation Radius:
+                            </span>
+                            <span class="text-cyan-300 font-orbitron font-bold text-base" id="displayChargePercent">100%</span>
+                        </div>
+                        <div class="w-full h-4 bg-slate-950/80 rounded-sm border border-slate-700/80 p-0.5 relative overflow-hidden">
+                            <!-- Animated bar fill -->
+                            <div class="h-full bg-gradient-to-r from-teal-500 via-cyan-400 to-yellow-400 rounded-sm transition-all duration-1000 shadow-[0_0_15px_rgba(0,210,255,0.8)] relative" style="width: 100%;">
+                                <div class="absolute inset-0 bg-white/20 animate-pulse"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- COUNTDOWN TIMER CONTAINER -->
+                <div class="ror-box p-4 md:p-6 flex flex-col sm:flex-row items-center justify-between gap-4">
+                    <div class="flex items-center gap-4">
+                        <div class="w-12 h-12 rounded bg-cyan-950/50 border border-cyan-500/40 flex items-center justify-center text-cyan-400 text-xl shadow-lg">
+                            <i class="fa-solid fa-stopwatch animate-pulse"></i>
+                        </div>
+                        <div>
+                            <div class="text-xs font-mono uppercase tracking-widest text-slate-400">OFFLINE COUNTDOWN</div>
+                            <div class="text-sm font-rajdhani text-slate-200">Stream signal terminating in:</div>
+                        </div>
+                    </div>
+
+                    <!-- Digital Timer Display -->
+                    <div class="flex items-center gap-2">
+                        <div class="ror-box px-6 py-2 border border-cyan-500/50 bg-black/60 shadow-inner">
+                            <span class="font-mono text-4xl sm:text-5xl font-black text-cyan-300 tracking-wider" id="timerDisplay">
+                                05:00
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- RIGHT COLUMN: RoR2 Style Run Summary & Stacked Items Stats -->
+            <div class="lg:col-span-5 pointer-events-auto">
+                <div class="ror-box p-5 md:p-6 hud-bracket flex flex-col gap-4">
+                    
+                    <!-- Header -->
+                    <div class="flex items-center justify-between border-b border-slate-700/80 pb-3">
+                        <div class="flex items-center gap-2">
+                            <i class="fa-solid fa-trophy text-yellow-400 text-sm"></i>
+                            <h2 class="font-orbitron font-bold text-lg text-white uppercase tracking-wider">
+                                RUN LOG SUMMARY
+                            </h2>
+                        </div>
+                        <span class="text-xs font-mono text-slate-400 uppercase">CLASS: CAPTAIN</span>
+                    </div>
+
+                    <!-- Post-Run Gameplay Statistics Grid -->
+                    <div class="grid grid-cols-2 gap-3 text-sm font-mono">
+                        <div class="bg-slate-900/60 p-2.5 rounded border border-slate-800 flex flex-col">
+                            <span class="text-[11px] text-slate-400 uppercase">Total Damage</span>
+                            <span class="text-base font-bold text-red-400" id="statDamage">14,892,104</span>
+                        </div>
+                        <div class="bg-slate-900/60 p-2.5 rounded border border-slate-800 flex flex-col">
+                            <span class="text-[11px] text-slate-400 uppercase">Stages Cleared</span>
+                            <span class="text-base font-bold text-emerald-400" id="statStages">18 Stages</span>
+                        </div>
+                        <div class="bg-slate-900/60 p-2.5 rounded border border-slate-800 flex flex-col">
+                            <span class="text-[11px] text-slate-400 uppercase">Bosses Slain</span>
+                            <span class="text-base font-bold text-yellow-400" id="statBosses">42 Elites</span>
+                        </div>
+                        <div class="bg-slate-900/60 p-2.5 rounded border border-slate-800 flex flex-col">
+                            <span class="text-[11px] text-slate-400 uppercase">Run Duration</span>
+                            <span class="text-base font-bold text-cyan-300" id="statTime">1h 48m 12s</span>
+                        </div>
+                    </div>
+
+                    <!-- RoR2 Items Stack Inventory Grid -->
+                    <div class="flex flex-col gap-2 mt-1">
+                        <div class="flex justify-between items-center text-xs font-mono text-slate-300">
+                            <span class="uppercase font-bold tracking-wider text-slate-400">SURVIVOR LOADOUT STACKS</span>
+                            <span class="text-yellow-400 font-bold" id="totalItemsCount">54 Items</span>
+                        </div>
+                        
+                        <!-- Grid of RoR2 Items -->
+                        <div class="grid grid-cols-4 sm:grid-cols-5 gap-2 max-h-[190px] overflow-y-auto pr-1" id="itemGrid">
+                            <!-- Items injected via JS -->
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+        </main>
+
+        <!-- BOTTOM SOCIAL MEDIA CARDS GRID -->
+        <footer class="w-full pointer-events-auto">
+            <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3 sm:gap-4">
+                
+                <!-- Twitch Card -->
+                <div class="ror-box p-3 flex items-center gap-3 transition-all duration-300 hover:scale-[1.02] border-l-2 border-purple-500">
+                    <div class="w-8 h-8 rounded bg-purple-950/80 flex items-center justify-center text-purple-400 text-lg">
+                        <i class="fa-brands fa-twitch"></i>
+                    </div>
+                    <div class="overflow-hidden">
+                        <div class="text-[10px] font-mono uppercase text-slate-400">Twitch</div>
+                        <div class="text-sm font-bold font-rajdhani text-white truncate" id="handleTwitch">
+                            twitch.tv/survivor
+                        </div>
+                    </div>
+                </div>
+
+                <!-- YouTube Card -->
+                <div class="ror-box p-3 flex items-center gap-3 transition-all duration-300 hover:scale-[1.02] border-l-2 border-red-500">
+                    <div class="w-8 h-8 rounded bg-red-950/80 flex items-center justify-center text-red-400 text-lg">
+                        <i class="fa-brands fa-youtube"></i>
+                    </div>
+                    <div class="overflow-hidden">
+                        <div class="text-[10px] font-mono uppercase text-slate-400">YouTube</div>
+                        <div class="text-sm font-bold font-rajdhani text-white truncate" id="handleYoutube">
+                            @SurvivorChannel
+                        </div>
+                    </div>
+                </div>
+
+                <!-- X / Twitter Card -->
+                <div class="ror-box p-3 flex items-center gap-3 transition-all duration-300 hover:scale-[1.02] border-l-2 border-cyan-400">
+                    <div class="w-8 h-8 rounded bg-cyan-950/80 flex items-center justify-center text-cyan-400 text-lg">
+                        <i class="fa-brands fa-x-twitter"></i>
+                    </div>
+                    <div class="overflow-hidden">
+                        <div class="text-[10px] font-mono uppercase text-slate-400">Twitter / X</div>
+                        <div class="text-sm font-bold font-rajdhani text-white truncate" id="handleTwitter">
+                            @SurvivorRisk
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Discord Card -->
+                <div class="ror-box p-3 flex items-center gap-3 transition-all duration-300 hover:scale-[1.02] border-l-2 border-indigo-400">
+                    <div class="w-8 h-8 rounded bg-indigo-950/80 flex items-center justify-center text-indigo-400 text-lg">
+                        <i class="fa-brands fa-discord"></i>
+                    </div>
+                    <div class="overflow-hidden">
+                        <div class="text-[10px] font-mono uppercase text-slate-400">Discord</div>
+                        <div class="text-sm font-bold font-rajdhani text-white truncate" id="handleDiscord">
+                            discord.gg/petrichor
+                        </div>
+                    </div>
+                </div>
+
+                <!-- TikTok / Instagram Card -->
+                <div class="ror-box p-3 flex items-center gap-3 transition-all duration-300 hover:scale-[1.02] border-l-2 border-pink-500 col-span-2 sm:col-span-1">
+                    <div class="w-8 h-8 rounded bg-pink-950/80 flex items-center justify-center text-pink-400 text-lg">
+                        <i class="fa-brands fa-tiktok"></i>
+                    </div>
+                    <div class="overflow-hidden">
+                        <div class="text-[10px] font-mono uppercase text-slate-400">TikTok</div>
+                        <div class="text-sm font-bold font-rajdhani text-white truncate" id="handleTiktok">
+                            @SurvivorClips
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </footer>
+
+    </div>
+
+    <!-- STREAMER CONTROLS DOCK TRIGGER (Floating Button) -->
+    <div id="controlsDockTrigger" class="fixed bottom-4 right-4 z-50 pointer-events-auto">
+        <button id="toggleDockBtn" class="ror-box px-4 py-2.5 bg-slate-900 text-cyan-300 border border-cyan-500/60 font-orbitron text-xs font-bold uppercase tracking-wider flex items-center gap-2 hover:bg-slate-800 transition-all shadow-2xl">
+            <i class="fa-solid fa-sliders text-yellow-400"></i> Streamer Controls <span class="text-[10px] bg-cyan-950 text-cyan-400 px-1.5 py-0.5 rounded border border-cyan-800">OBS TOOL</span>
+        </button>
+    </div>
+
+    <!-- STREAMER CUSTOMIZATION DOCK SLIDE-OVER MODAL -->
+    <div id="configModal" class="fixed inset-y-0 right-0 w-full max-w-md bg-slate-950/95 border-l border-cyan-500/40 z-50 p-6 shadow-2xl backdrop-blur-xl transition-transform duration-300 translate-x-full overflow-y-auto text-slate-200 pointer-events-auto">
+        
+        <!-- Modal Header -->
+        <div class="flex items-center justify-between border-b border-slate-800 pb-4 mb-6">
+            <div class="flex items-center gap-3">
+                <i class="fa-solid fa-gear text-yellow-400 text-xl"></i>
+                <div>
+                    <h3 class="font-orbitron font-bold text-lg text-white">STREAMER CONTROL DOCK</h3>
+                    <p class="text-xs font-mono text-slate-400">Customize text, timer, audio & layout</p>
+                </div>
+            </div>
+            <button id="closeDockBtn" class="text-slate-400 hover:text-white text-xl p-1">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+        </div>
+
+        <div class="space-y-6 text-sm font-rajdhani">
+            
+            <!-- OBS CLEAN PREVIEW MODE -->
+            <div class="p-3 bg-cyan-950/30 border border-cyan-500/30 rounded flex items-center justify-between">
+                <div>
+                    <div class="font-bold text-cyan-300">Clean OBS Overlay</div>
+                    <div class="text-xs text-slate-400">Hide streamer control toggle button for broadcast</div>
+                </div>
+                <button id="cleanObsToggle" class="px-3 py-1 bg-cyan-500/20 border border-cyan-400 text-cyan-300 font-mono text-xs font-bold rounded hover:bg-cyan-500/40">
+                    HIDE BUTTON
+                </button>
+            </div>
+
+            <!-- THEME PRESET SELECTOR -->
+            <div>
+                <label class="block font-mono text-xs uppercase text-slate-400 mb-2">Environment Theme</label>
+                <div class="grid grid-cols-2 gap-2 font-mono text-xs">
+                    <button class="theme-btn px-3 py-2 rounded border text-left flex items-center justify-between border-cyan-500/60 bg-cyan-950/40 text-cyan-300" data-theme="sky-meadow">
+                        <span>Sky Meadow</span>
+                        <span class="w-3 h-3 rounded-full bg-emerald-400"></span>
+                    </button>
+                    <button class="theme-btn px-3 py-2 rounded border text-left flex items-center justify-between border-slate-700 bg-slate-900 text-slate-300" data-theme="abyssal">
+                        <span>Abyssal Depths</span>
+                        <span class="w-3 h-3 rounded-full bg-red-500"></span>
+                    </button>
+                    <button class="theme-btn px-3 py-2 rounded border text-left flex items-center justify-between border-slate-700 bg-slate-900 text-slate-300" data-theme="void">
+                        <span>Void Locus</span>
+                        <span class="w-3 h-3 rounded-full bg-purple-500"></span>
+                    </button>
+                    <button class="theme-btn px-3 py-2 rounded border text-left flex items-center justify-between border-slate-700 bg-slate-900 text-slate-300" data-theme="titanic">
+                        <span>Titanic Plains</span>
+                        <span class="w-3 h-3 rounded-full bg-yellow-400"></span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- TIMER CONTROLS -->
+            <div class="p-4 bg-slate-900/80 border border-slate-800 rounded space-y-3">
+                <label class="block font-mono text-xs uppercase text-slate-400">Countdown Timer Controls</label>
+                <div class="flex items-center justify-between gap-2">
+                    <button id="btnTimerStart" class="flex-1 py-2 bg-emerald-600/80 hover:bg-emerald-500 text-white font-mono font-bold rounded text-xs flex items-center justify-center gap-1">
+                        <i class="fa-solid fa-play"></i> START
+                    </button>
+                    <button id="btnTimerPause" class="flex-1 py-2 bg-yellow-600/80 hover:bg-yellow-500 text-white font-mono font-bold rounded text-xs flex items-center justify-center gap-1">
+                        <i class="fa-solid fa-pause"></i> PAUSE
+                    </button>
+                    <button id="btnTimerReset" class="flex-1 py-2 bg-red-600/80 hover:bg-red-500 text-white font-mono font-bold rounded text-xs flex items-center justify-center gap-1">
+                        <i class="fa-solid fa-rotate-left"></i> RESET
+                    </button>
+                </div>
+                <div class="flex gap-2">
+                    <button id="btnTimerMinus" class="flex-1 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-200 font-mono text-xs rounded border border-slate-700">
+                        -1 Min
+                    </button>
+                    <button id="btnTimerPlus" class="flex-1 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-200 font-mono text-xs rounded border border-slate-700">
+                        +1 Min
+                    </button>
+                </div>
+            </div>
+
+            <!-- AMBIENT PROCEDURAL AUDIO SYNTH (Web Audio API) -->
+            <div class="p-4 bg-slate-900/80 border border-slate-800 rounded space-y-2">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <div class="font-bold text-white">Atmospheric Ambient Sound</div>
+                        <div class="text-xs text-slate-400">Procedural synth drone & rain generator</div>
+                    </div>
+                    <button id="btnToggleAudio" class="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-cyan-300 font-mono text-xs font-bold rounded border border-cyan-500/40">
+                        <i class="fa-solid fa-volume-xmark mr-1"></i> MUTED
+                    </button>
+                </div>
+            </div>
+
+            <!-- ATMOSPHERIC CANVAS CONTROLS -->
+            <div class="space-y-3">
+                <label class="block font-mono text-xs uppercase text-slate-400">Atmosphere Dynamics</label>
+                <div>
+                    <div class="flex justify-between text-xs text-slate-400 mb-1">
+                        <span>Rain Density</span>
+                        <span id="rainVal">120</span>
+                    </div>
+                    <input type="range" id="sliderRain" min="20" max="300" value="120" class="w-full accent-cyan-400 bg-slate-800">
+                </div>
+                <div>
+                    <div class="flex justify-between text-xs text-slate-400 mb-1">
+                        <span>Floating Spores / Embers</span>
+                        <span id="sporeVal">40</span>
+                    </div>
+                    <input type="range" id="sliderSpores" min="10" max="100" value="40" class="w-full accent-cyan-400 bg-slate-800">
+                </div>
+            </div>
+
+            <!-- BROADCAST TEXT EDITORS -->
+            <div class="space-y-3 border-t border-slate-800 pt-4">
+                <label class="block font-mono text-xs uppercase text-slate-400">Display Text Editor</label>
+                
+                <div>
+                    <span class="text-xs text-slate-400">Main Banner Title</span>
+                    <input type="text" id="inputMainTitle" value="TELEPORTER CHARGED" class="w-full bg-slate-900 border border-slate-700 rounded px-3 py-1.5 text-sm text-white focus:border-cyan-400 outline-none">
+                </div>
+
+                <div>
+                    <span class="text-xs text-slate-400">Subtitle</span>
+                    <input type="text" id="inputSubtitle" value="Thanks for surviving tonight's planetary run! Next broadcast commencing soon." class="w-full bg-slate-900 border border-slate-700 rounded px-3 py-1.5 text-sm text-white focus:border-cyan-400 outline-none">
+                </div>
+
+                <div>
+                    <span class="text-xs text-slate-400">Stage Name & Number</span>
+                    <div class="grid grid-cols-4 gap-2">
+                        <input type="text" id="inputStageNum" value="99" class="col-span-1 bg-slate-900 border border-slate-700 rounded px-2 py-1 text-sm text-yellow-400 text-center">
+                        <input type="text" id="inputStageName" value="PETRICHOR V - PRIME" class="col-span-3 bg-slate-900 border border-slate-700 rounded px-3 py-1 text-sm text-white">
+                    </div>
+                </div>
+            </div>
+
+            <!-- SOCIAL MEDIA HANDLES EDITORS -->
+            <div class="space-y-2 border-t border-slate-800 pt-4">
+                <label class="block font-mono text-xs uppercase text-slate-400">Social Handles</label>
+                <div class="grid grid-cols-2 gap-2 text-xs">
+                    <input type="text" id="inputTwitch" value="twitch.tv/survivor" placeholder="Twitch" class="bg-slate-900 border border-slate-800 rounded p-2 text-white">
+                    <input type="text" id="inputYoutube" value="@SurvivorChannel" placeholder="YouTube" class="bg-slate-900 border border-slate-800 rounded p-2 text-white">
+                    <input type="text" id="inputTwitter" value="@SurvivorRisk" placeholder="Twitter" class="bg-slate-900 border border-slate-800 rounded p-2 text-white">
+                    <input type="text" id="inputDiscord" value="discord.gg/petrichor" placeholder="Discord" class="bg-slate-900 border border-slate-800 rounded p-2 text-white">
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- JAVASCRIPT APP LOGIC & CANVAS ENGINE -->
+    <script>
+        // -------------------------------------------------------------
+        // 1. ROR2 ITEM DEFINITIONS & INITIAL LOADOUT DATA
+        // -------------------------------------------------------------
+        const ROR2_ITEMS = [
+            { name: "Soldier's Syringe", tier: "white", icon: "fa-syringe", count: 14 },
+            { name: "Ukulele", tier: "green", icon: "fa-guitar", count: 6 },
+            { name: "57 Leaf Clover", tier: "red", icon: "fa-clover", count: 3 },
+            { name: "Lens-Maker's Glasses", tier: "white", icon: "fa-glasses", count: 9 },
+            { name: "AtG Missile Mk. 1", tier: "green", icon: "fa-rocket", count: 5 },
+            { name: "Brilliant Behemoth", tier: "red", icon: "fa-explosion", count: 2 },
+            { name: "Shaped Glass", tier: "lunar", icon: "fa-gem", count: 1 },
+            { name: "Titanic Knurl", tier: "boss", icon: "fa-shield-halved", count: 2 },
+            { name: "Paul's Goat Hoof", tier: "white", icon: "fa-shoe-prints", count: 8 },
+            { name: "Hopoo Feather", tier: "green", icon: "fa-feather", count: 4 }
+        ];
+
+        function renderItemGrid() {
+            const grid = document.getElementById('itemGrid');
+            grid.innerHTML = '';
+            let totalCount = 0;
+
+            ROR2_ITEMS.forEach(item => {
+                totalCount += item.count;
+                const card = document.createElement('div');
+                card.className = `item-card tier-${item.tier} p-2 rounded flex flex-col items-center justify-center relative border border-slate-700/50 bg-slate-950/70 cursor-pointer`;
+                card.title = `${item.name} (x${item.count})`;
+
+                let tierColorClass = 'text-white';
+                if(item.tier === 'green') tierColorClass = 'text-emerald-400';
+                if(item.tier === 'red') tierColorClass = 'text-red-400';
+                if(item.tier === 'lunar') tierColorClass = 'text-cyan-300';
+                if(item.tier === 'boss') tierColorClass = 'text-yellow-400';
+
+                card.innerHTML = `
+                    <i class="fa-solid ${item.icon} text-lg ${tierColorClass} my-1"></i>
+                    <span class="absolute top-0.5 right-1 text-[10px] font-mono font-bold text-slate-200">x${item.count}</span>
+                    <span class="text-[9px] font-mono text-slate-400 truncate w-full text-center leading-tight">${item.name}</span>
+                `;
+
+                // Quick stack increment on click
+                card.addEventListener('click', () => {
+                    item.count += 1;
+                    renderItemGrid();
+                });
+
+                grid.appendChild(card);
+            });
+
+            document.getElementById('totalItemsCount').textContent = `${totalCount} Items`;
+        }
+
+        // -------------------------------------------------------------
+        // 2. ATMOSPHERIC CANVAS PARTICLES & BEAM ENGINE
+        // -------------------------------------------------------------
+        const canvas = document.getElementById('bgCanvas');
+        const ctx = canvas.getContext('2d');
+
+        let width = canvas.width = window.innerWidth;
+        let height = canvas.height = window.innerHeight;
+
+        window.addEventListener('resize', () => {
+            width = canvas.width = window.innerWidth;
+            height = canvas.height = window.innerHeight;
+        });
+
+        // Current Theme Colors Config
+        let themeColors = {
+            rain: 'rgba(0, 210, 255, 0.4)',
+            spore: 'rgba(52, 232, 158, 0.7)',
+            beam: 'rgba(0, 210, 255, 0.15)'
+        };
+
+        // Particles arrays
+        let rainDrops = [];
+        let spores = [];
+
+        function initParticles() {
+            const rainCount = parseInt(document.getElementById('sliderRain').value);
+            const sporeCount = parseInt(document.getElementById('sliderSpores').value);
+
+            rainDrops = [];
+            for (let i = 0; i < rainCount; i++) {
+                rainDrops.push({
+                    x: Math.random() * width,
+                    y: Math.random() * height,
+                    length: Math.random() * 25 + 15,
+                    speed: Math.random() * 12 + 10,
+                    opacity: Math.random() * 0.4 + 0.2,
+                    thickness: Math.random() * 1.5 + 0.5
+                });
+            }
+
+            spores = [];
+            for (let i = 0; i < sporeCount; i++) {
+                spores.push({
+                    x: Math.random() * width,
+                    y: Math.random() * height,
+                    radius: Math.random() * 3 + 1,
+                    speedY: - (Math.random() * 0.8 + 0.2),
+                    drift: Math.random() * 1 - 0.5,
+                    opacity: Math.random() * 0.7 + 0.3,
+                    pulse: Math.random() * 0.05 + 0.01
+                });
+            }
+        }
+
+        function drawBackgroundTeleporterBeam() {
+            // Drawing vertical teleporter energy pillar in canvas center
+            const beamWidth = 240;
+            const centerX = width / 2;
+
+            const gradient = ctx.createLinearGradient(centerX - beamWidth/2, 0, centerX + beamWidth/2, 0);
+            gradient.addColorStop(0, 'rgba(0, 0, 0, 0)');
+            gradient.addColorStop(0.5, themeColors.beam);
+            gradient.addColorStop(1, 'rgba(0, 0, 0, 0)');
+
+            ctx.fillStyle = gradient;
+            ctx.fillRect(centerX - beamWidth/2, 0, beamWidth, height);
+        }
+
+        function renderAtmosphere() {
+            ctx.clearRect(0, 0, width, height);
+
+            // 1. Teleporter Beam Glow
+            drawBackgroundTeleporterBeam();
+
+            // 2. Render Falling Rain Streaks
+            ctx.strokeStyle = themeColors.rain;
+            ctx.lineCap = 'round';
+
+            for (let drop of rainDrops) {
+                ctx.lineWidth = drop.thickness;
+                ctx.beginPath();
+                ctx.moveTo(drop.x, drop.y);
+                ctx.lineTo(drop.x - 3, drop.y + drop.length);
+                ctx.stroke();
+
+                // Update position
+                drop.y += drop.speed;
+                drop.x -= 0.8; // slight angled rain
+
+                if (drop.y > height) {
+                    drop.y = -20;
+                    drop.x = Math.random() * (width + 100);
+                }
+            }
+
+            // 3. Render Bioluminescent Spores / Embers
+            for (let spore of spores) {
+                ctx.beginPath();
+                ctx.arc(spore.x, spore.y, spore.radius, 0, Math.PI * 2);
+                ctx.fillStyle = themeColors.spore;
+                ctx.shadowBlur = 10;
+                ctx.shadowColor = themeColors.spore;
+                ctx.fill();
+                ctx.shadowBlur = 0;
+
+                // Move upward
+                spore.y += spore.speedY;
+                spore.x += Math.sin(spore.y * 0.02) * spore.drift;
+
+                if (spore.y < -10) {
+                    spore.y = height + 10;
+                    spore.x = Math.random() * width;
+                }
+            }
+
+            requestAnimationFrame(renderAtmosphere);
+        }
+
+        // -------------------------------------------------------------
+        // 3. COUNTDOWN TIMER ENGINE
+        // -------------------------------------------------------------
+        let timerSeconds = 300; // default 5 minutes
+        let timerInterval = null;
+        let isTimerRunning = false;
+
+        function updateTimerDisplay() {
+            const mins = Math.floor(timerSeconds / 60);
+            const secs = timerSeconds % 60;
+            document.getElementById('timerDisplay').textContent = 
+                `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
+        }
+
+        function startTimer() {
+            if (isTimerRunning) return;
+            isTimerRunning = true;
+            timerInterval = setInterval(() => {
+                if (timerSeconds > 0) {
+                    timerSeconds--;
+                    updateTimerDisplay();
+                } else {
+                    pauseTimer();
+                }
+            }, 1000);
+        }
+
+        function pauseTimer() {
+            isTimerRunning = false;
+            clearInterval(timerInterval);
+        }
+
+        function resetTimer() {
+            pauseTimer();
+            timerSeconds = 300;
+            updateTimerDisplay();
+        }
+
+        document.getElementById('btnTimerStart').addEventListener('click', startTimer);
+        document.getElementById('btnTimerPause').addEventListener('click', pauseTimer);
+        document.getElementById('btnTimerReset').addEventListener('click', resetTimer);
+        
+        document.getElementById('btnTimerPlus').addEventListener('click', () => {
+            timerSeconds += 60;
+            updateTimerDisplay();
+        });
+        
+        document.getElementById('btnTimerMinus').addEventListener('click', () => {
+            timerSeconds = Math.max(0, timerSeconds - 60);
+            updateTimerDisplay();
+        });
+
+        // -------------------------------------------------------------
+        // 4. PROCEDURAL WEB AUDIO API (AMBIENT SCI-FI SYNTH & RAIN)
+        // -------------------------------------------------------------
+        let audioCtx = null;
+        let isAudioPlaying = false;
+        let synthGain = null;
+
+        function initAudioEngine() {
+            if (audioCtx) return;
+            const AudioContext = window.AudioContext || window.webkitAudioContext;
+            audioCtx = new AudioContext();
+
+            // Ambient Drone Synth
+            const osc1 = audioCtx.createOscillator();
+            const osc2 = audioCtx.createOscillator();
+            const filter = audioCtx.createBiquadFilter();
+            synthGain = audioCtx.createGain();
+
+            osc1.type = 'sawtooth';
+            osc1.frequency.setValueAtTime(55, audioCtx.currentTime); // A1 note
+            
+            osc2.type = 'sine';
+            osc2.frequency.setValueAtTime(110, audioCtx.currentTime); // A2 note
+
+            filter.type = 'lowpass';
+            filter.frequency.setValueAtTime(320, audioCtx.currentTime);
+
+            synthGain.gain.setValueAtTime(0.08, audioCtx.currentTime);
+
+            osc1.connect(filter);
+            osc2.connect(filter);
+            filter.connect(synthGain);
+            synthGain.connect(audioCtx.destination);
+
+            osc1.start();
+            osc2.start();
+        }
+
+        document.getElementById('btnToggleAudio').addEventListener('click', () => {
+            if (!audioCtx) initAudioEngine();
+
+            if (audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
+
+            if (isAudioPlaying) {
+                synthGain.gain.setValueAtTime(0, audioCtx.currentTime);
+                isAudioPlaying = false;
+                document.getElementById('btnToggleAudio').innerHTML = '<i class="fa-solid fa-volume-xmark mr-1"></i> MUTED';
+                document.getElementById('btnToggleAudio').classList.remove('bg-cyan-600', 'text-white');
+            } else {
+                synthGain.gain.setValueAtTime(0.08, audioCtx.currentTime);
+                isAudioPlaying = true;
+                document.getElementById('btnToggleAudio').innerHTML = '<i class="fa-solid fa-volume-high mr-1"></i> PLAYING';
+                document.getElementById('btnToggleAudio').classList.add('bg-cyan-600', 'text-white');
+            }
+        });
+
+        // -------------------------------------------------------------
+        // 5. LIVE INPUT BINDINGS & STREAMER CONTROLS
+        // -------------------------------------------------------------
+        // Theme switching
+        const themeBtns = document.querySelectorAll('.theme-btn');
+        themeBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                const selectedTheme = btn.getAttribute('data-theme');
+                document.body.className = `theme-${selectedTheme} w-screen h-screen flex flex-col justify-between p-4 md:p-6 relative select-none`;
+
+                themeBtns.forEach(b => {
+                    b.classList.remove('border-cyan-500/60', 'bg-cyan-950/40', 'text-cyan-300');
+                    b.classList.add('border-slate-700', 'bg-slate-900', 'text-slate-300');
+                });
+                btn.classList.add('border-cyan-500/60', 'bg-cyan-950/40', 'text-cyan-300');
+
+                // Adjust canvas atmospheric color schemes
+                if (selectedTheme === 'sky-meadow') {
+                    themeColors.rain = 'rgba(0, 210, 255, 0.4)';
+                    themeColors.spore = 'rgba(52, 232, 158, 0.8)';
+                    themeColors.beam = 'rgba(0, 210, 255, 0.15)';
+                } else if (selectedTheme === 'abyssal') {
+                    themeColors.rain = 'rgba(255, 42, 75, 0.4)';
+                    themeColors.spore = 'rgba(255, 140, 0, 0.8)';
+                    themeColors.beam = 'rgba(255, 42, 75, 0.18)';
+                } else if (selectedTheme === 'void') {
+                    themeColors.rain = 'rgba(188, 19, 254, 0.4)';
+                    themeColors.spore = 'rgba(0, 243, 255, 0.8)';
+                    themeColors.beam = 'rgba(188, 19, 254, 0.18)';
+                } else if (selectedTheme === 'titanic') {
+                    themeColors.rain = 'rgba(255, 183, 0, 0.4)';
+                    themeColors.spore = 'rgba(32, 224, 112, 0.8)';
+                    themeColors.beam = 'rgba(255, 183, 0, 0.15)';
+                }
+            });
+        });
+
+        // Dock Toggle Logic
+        const configModal = document.getElementById('configModal');
+        const toggleDockBtn = document.getElementById('toggleDockBtn');
+        const closeDockBtn = document.getElementById('closeDockBtn');
+
+        toggleDockBtn.addEventListener('click', () => {
+            configModal.classList.remove('translate-x-full');
+        });
+        closeDockBtn.addEventListener('click', () => {
+            configModal.classList.add('translate-x-full');
+        });
+
+        // Clean OBS Mode toggle (hides control trigger for stream preview)
+        let isCleanObs = false;
+        document.getElementById('cleanObsToggle').addEventListener('click', (e) => {
+            isCleanObs = !isCleanObs;
+            if(isCleanObs) {
+                document.getElementById('controlsDockTrigger').classList.add('opacity-0', 'pointer-events-none');
+                configModal.classList.add('translate-x-full');
+                e.target.textContent = "SHOW BUTTON";
+            } else {
+                document.getElementById('controlsDockTrigger').classList.remove('opacity-0', 'pointer-events-none');
+                e.target.textContent = "HIDE BUTTON";
+            }
+        });
+
+        // Keyboard shortcut 'C' or 'H' to toggle dock
+        window.addEventListener('keydown', (e) => {
+            if(e.key.toLowerCase() === 'c' || e.key.toLowerCase() === 'h') {
+                if(configModal.classList.contains('translate-x-full')) {
+                    configModal.classList.remove('translate-x-full');
+                    document.getElementById('controlsDockTrigger').classList.remove('opacity-0', 'pointer-events-none');
+                } else {
+                    configModal.classList.add('translate-x-full');
+                }
+            }
+        });
+
+        // Realtime Text Input Bindings
+        document.getElementById('inputMainTitle').addEventListener('input', (e) => {
+            document.getElementById('displayMainTitle').textContent = e.target.value || "TELEPORTER CHARGED";
+        });
+        document.getElementById('inputSubtitle').addEventListener('input', (e) => {
+            document.getElementById('displaySubtitle').textContent = e.target.value;
+        });
+        document.getElementById('inputStageNum').addEventListener('input', (e) => {
+            document.getElementById('displayStageNum').textContent = e.target.value;
+        });
+        document.getElementById('inputStageName').addEventListener('input', (e) => {
+            document.getElementById('displayStageName').textContent = e.target.value;
+        });
+
+        // Social Handles
+        document.getElementById('inputTwitch').addEventListener('input', (e) => {
+            document.getElementById('handleTwitch').textContent = e.target.value;
+        });
+        document.getElementById('inputYoutube').addEventListener('input', (e) => {
+            document.getElementById('handleYoutube').textContent = e.target.value;
+        });
+        document.getElementById('inputTwitter').addEventListener('input', (e) => {
+            document.getElementById('handleTwitter').textContent = e.target.value;
+        });
+        document.getElementById('inputDiscord').addEventListener('input', (e) => {
+            document.getElementById('handleDiscord').textContent = e.target.value;
+        });
+
+        // Particle Slider Controls
+        document.getElementById('sliderRain').addEventListener('input', (e) => {
+            document.getElementById('rainVal').textContent = e.target.value;
+            initParticles();
+        });
+        document.getElementById('sliderSpores').addEventListener('input', (e) => {
+            document.getElementById('sporeVal').textContent = e.target.value;
+            initParticles();
+        });
+
+        // -------------------------------------------------------------
+        // 6. INITIALIZATION ON WINDOW LOAD
+        // -------------------------------------------------------------
+        window.onload = function() {
+            renderItemGrid();
+            initParticles();
+            renderAtmosphere();
+            updateTimerDisplay();
+            startTimer();
+        };
+    </script>
+</body>
+</html>
